@@ -19,12 +19,10 @@ for iter = 1:num_iters
 
 
 
+    prediction = X * theta;
 
-
-
-
-
-
+    update = ( (alpha/m) * sum( (prediction-y) .* X ) );
+    theta = theta - update';
 
 
     % ============================================================
