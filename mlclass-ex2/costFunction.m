@@ -21,6 +21,13 @@ grad = zeros(size(theta));
 %
 
 
+prediction = sigmoid(X * theta);
+
+posAdjust = -y .* log(prediction);
+negAdjust = -(1-y) .* log(1-prediction);
+J = sum(posAdjust + negAdjust)/m;
+
+grad = ( sum( (prediction-y) .* X )/m )';
 
 
 
