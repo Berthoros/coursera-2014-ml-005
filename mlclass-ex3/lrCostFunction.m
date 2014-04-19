@@ -36,17 +36,24 @@ grad = zeros(size(theta));
 %           grad = grad + YOUR_CODE_HERE (using the temp variable)
 %
 
+warning("off", "Octave:broadcast");
+
+prediction = sigmoid(X * theta);
+
+posAdjust = -y .* log(prediction);
+negAdjust = -(1-y) .* log(1-prediction);
+
+theta1 = theta(2:end);
+regAdjust = lambda * (theta1' * theta1) / (2 * m);
+J = sum(posAdjust + negAdjust)/m + regAdjust;
 
 
+regAdjustGrad = (lambda/m) .* theta;
+regAdjustGrad(1) = 0; % do not adjust theta0
 
+grad = ( sum( (prediction-y) .* X )/m )' + regAdjustGrad;
 
-
-
-
-
+warning("on", "Octave:broadcast");
 
 % =============================================================
-
-grad = grad(:);
-
 end
