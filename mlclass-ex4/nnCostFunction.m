@@ -38,7 +38,28 @@ Theta2_grad = zeros(size(Theta2));
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
-%
+
+a1 = [ones(m, 1) X]; % Add ones as bias
+z2 = (a1 * Theta1');
+a2 = sigmoid(z2);
+
+a2 = [ones(m,1) a2]; % Add ones as bias
+z3 = (a2 * Theta2');
+hypothesis = a3 = sigmoid(z3);
+
+yMatrix = cell2mat( arrayfun( @(x) x == y, 1:num_labels, 'UniformOutput', false ) );
+
+costWhenYis1 = -yMatrix .* log(hypothesis);
+costWhenYis0 = (1 - yMatrix) .* log(1-hypothesis);
+
+sum_of_costs = sum( sum( costWhenYis1 - costWhenYis0 ) );
+
+theta1Reg = Theta1(:, 2:end ); % Remove coefficients for bias
+theta2Reg = Theta2(:, 2:end );
+regularization = (lambda/(2*m)) * ( sum(sum( theta1Reg .^ 2 )) + sum(sum( theta2Reg .^ 2 )) );
+
+J = (sum_of_costs / m) + regularization;
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -53,7 +74,34 @@ Theta2_grad = zeros(size(Theta2));
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
-%
+
+% -- Unvectorized version
+%    Delta1 = zeros(size(Theta1));
+%    Delta2 = zeros(size(Theta2));
+%    for k = 1:m
+%        a1 = [1 X(k,:)]; % Add one as bias
+%        z2 = (a1 * Theta1');
+%        a2 = sigmoid(z2);
+%    
+%        a2 = [1 a2]; % Add one as bias
+%        z3 = (a2 * Theta2');
+%        a3 = sigmoid(z3);
+%     
+%        delta3 = a3 - yMatrix(k,:);
+%        Delta2 = Delta2 + (delta3' * a2);
+%        
+%        delta2 = (delta3 * Theta2)(2:end) .* sigmoidGradient(z2);
+%        Delta1 = Delta1 + (delta2' * a1);
+%    endfor
+
+% -- Vectorized version
+delta3 = a3 - yMatrix;
+Delta2 = (delta3' * a2);
+
+delta2 = (delta3 * Theta2)(:,2:end) .* sigmoidGradient(z2);
+Delta1 = (delta2' * a1);
+
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
@@ -62,23 +110,11 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+Theta1_reg = (lambda/m) * [zeros(size(Theta1,1),1) Theta1(:,2:end)];
+Theta2_reg = (lambda/m) * [zeros(size(Theta2,1),1) Theta2(:,2:end)];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Theta1_grad = (Delta1) ./m + Theta1_reg;
+Theta2_grad = (Delta2) ./m + Theta2_reg;
 
 % -------------------------------------------------------------
 
