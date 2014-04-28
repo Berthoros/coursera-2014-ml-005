@@ -15,7 +15,12 @@ X_poly = zeros(numel(X), p);
 %
 % 
 
+   accum = ones(numel(X),1);
+   for i = 1:p
 
+       accum = accum .* X;
+       X_poly(:,i) = accum;
+   end
 
 
 

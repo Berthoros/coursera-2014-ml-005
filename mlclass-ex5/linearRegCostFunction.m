@@ -20,14 +20,21 @@ grad = zeros(size(theta));
 %
 
 
+prediction = X * theta;
+error = (prediction -y);
+squaredError = error' * error;
+cost = sum(squaredError)  / ( 2 * m ); 
+
+theta1 = theta(2:end);
+regAdjust = lambda * (theta1' * theta1) / (2 * m);
+
+J = cost + regAdjust;
 
 
+regAdjustGrad = (lambda/m) .* theta;
+regAdjustGrad(1) = 0; % do not adjust theta0
 
-
-
-
-
-
+grad = ( sum( error .* X )/m )' + regAdjustGrad;
 
 
 % =========================================================================
