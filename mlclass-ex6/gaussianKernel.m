@@ -16,7 +16,10 @@ sim = 0;
 %
 %
 
+diff = x1-x2;
+sq_diff = diff' * diff;
 
+sim = exp( -1 * sq_diff/( 2* (sigma^2)) );
 
 
 
