@@ -40,18 +40,25 @@ Theta_grad = zeros(size(Theta));
 %                     partial derivatives w.r.t. to each element of Theta
 %
 
+error = (X * Theta' - Y) .* R; 
 
+sq_error = error .^ 2;
+plain_cost = sum( sq_error(:) ) / 2;
 
+sq_Theta = Theta .^ 2;
+regAdjustTheta = (lambda/2) * sum( sq_Theta(:) );
 
+sq_X = X .^ 2;
+regAdjustX = (lambda/2) * sum( sq_X(:) );
 
+J = plain_cost + regAdjustTheta + regAdjustX;
 
+%%
+regAdjust_X_grad = lambda * X;
+X_grad = error * Theta + regAdjust_X_grad;
 
-
-
-
-
-
-
+regAdjust_Theta_grad = lambda * Theta;
+Theta_grad  = error' * X + regAdjust_Theta_grad;
 
 
 
